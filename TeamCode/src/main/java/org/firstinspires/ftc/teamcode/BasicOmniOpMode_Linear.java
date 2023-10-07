@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -61,8 +62,9 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        //arm drives:
         armDrive.setDirection(DcMotor.Direction.FORWARD);
         armDrive2.setDirection(DcMotor.Direction.REVERSE);
 
@@ -122,5 +124,5 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         }
     }}
 // thank you Graden for the set up
-// if someone else tells me to upload this fucker to the cloud im losing it
+// if someone else tells me to upload this thing to the cloud im losing it
 
