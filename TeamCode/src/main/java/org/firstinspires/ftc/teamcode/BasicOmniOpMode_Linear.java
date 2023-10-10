@@ -48,6 +48,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
     private DcMotor rightBackDrive = null;
     private DcMotor armDrive = null;
     private DcMotor armDrive2 = null;
+    private DcMotor linearSlide = null;
     @Override
     public void runOpMode() {
 
@@ -59,6 +60,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         armDrive = hardwareMap.get(DcMotor.class,"Arm_drive" );
         armDrive2 = hardwareMap.get(DcMotor.class,"Upper_Arm_Drive");
+        linearSlide = hardwareMap.get(DcMotor.class,"linear_slide");
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -67,6 +69,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         //arm drives:
         armDrive.setDirection(DcMotor.Direction.FORWARD);
         armDrive2.setDirection(DcMotor.Direction.REVERSE);
+        linearSlide.setDirection(DcMotor.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -81,11 +84,11 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.left_stick_x;
+            double lateral =  -gamepad1.left_stick_x; // should make mecanum do good( added an "-")
             double yaw     =  gamepad1.right_stick_x;
-            double armPower = Range.clip(gamepad2.left_stick_y,-0.7, 0.7);;
-            double otherArmPower =  Range.clip(gamepad2.right_stick_x, -0.7, 0.7);
-
+            double armPower = Range.clip(gamepad2.left_stick_y,-1.0, 1.0);
+            double otherArmPower =  Range.clip(gamepad2.right_stick_x, -1.0, 1.0);
+            double linearSlideArmDrive =  Range.clip(gamepad2.right_stick_x, -1.0, 1.0);
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
@@ -113,7 +116,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             rightBackDrive.setPower(rightBackPower);
             armDrive.setPower(armPower);
             armDrive2.setPower(otherArmPower);
-            // line 171-172 numbers subject to change
+            linearSlide.setPower(linearSlideArmDrive);
 
 
             // Show the elapsed game time and wheel power.
