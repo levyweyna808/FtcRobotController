@@ -70,7 +70,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         armDrive.setDirection(DcMotor.Direction.FORWARD);
         armDrive2.setDirection(DcMotor.Direction.REVERSE);
         linearSlide.setDirection(DcMotor.Direction.REVERSE);
-
+        
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -88,8 +88,10 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             double yaw     =  gamepad1.right_stick_x;
             double armPower = Range.clip(gamepad2.left_stick_y,-1.0, 1.0);
             double otherArmPower =  Range.clip(gamepad2.right_stick_y, -1.0, 1.0);
-            double linearSlideArmDrive =  Range.clip(gamepad2.right_stick_x, -1.0, 1.0);
-
+            //slide in and out
+            double linearSlideExtend = -gamepad2.right_stick_x;
+            //double linearSlideExtend = -gamepad2.right_trigger;
+            //double linearSlideBack = gamepad2.left_trigger;
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
             double leftFrontPower  = axial + lateral + yaw;
@@ -116,8 +118,8 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             rightBackDrive.setPower(rightBackPower);
             armDrive.setPower(armPower);
             armDrive2.setPower(otherArmPower);
-            linearSlide.setPower(linearSlideArmDrive);
-
+            linearSlide.setPower(linearSlideExtend);
+            //linearSlide.setPower(linearSlideBack);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
