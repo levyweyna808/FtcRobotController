@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -49,6 +50,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
     private DcMotor armDrive = null;
     private DcMotor armDrive2 = null;
     private DcMotor linearSlide = null;
+    private  Servo grabberServo = null;
     @Override
     public void runOpMode() {
 
@@ -61,7 +63,9 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         armDrive = hardwareMap.get(DcMotor.class,"Arm_drive" );
         armDrive2 = hardwareMap.get(DcMotor.class,"Upper_Arm_Drive");
         linearSlide = hardwareMap.get(DcMotor.class,"linear_slide");
-
+        grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
+        
+        
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -70,7 +74,11 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         armDrive.setDirection(DcMotor.Direction.FORWARD);
         armDrive2.setDirection(DcMotor.Direction.REVERSE);
         linearSlide.setDirection(DcMotor.Direction.REVERSE);
-        
+        //servo for the grabber
+        grabberServo.setDirection(Servo.Direction.FORWARD);
+
+        int servoPos = 0;
+
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -88,10 +96,20 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             double yaw     =  gamepad1.right_stick_x;
             double armPower = Range.clip(gamepad2.left_stick_y,-1.0, 1.0);
             double otherArmPower =  Range.clip(gamepad2.right_stick_y, -1.0, 1.0);
+            //servo control
+            double servoBack = Range.clip(-gamepad2.right_stick_x, -1.0, 1.0);
+            double servoOut = Range.clip(gamepad2.right_stick_x, -1.0, 1.0);
+
+            // \/ \/ \/ \/ \/ \/ \/ for slide \/ \/ \/ \/ \/ \/
+
             //slide in and out
-            double linearSlideExtend = -gamepad2.right_stick_x;
+            //double linearSlideExtend = -gamepad2.right_stick_x;
+            // line 93 to 95 works, however, the motor has issues with speed 
             //double linearSlideExtend = -gamepad2.right_trigger;
             //double linearSlideBack = gamepad2.left_trigger;
+
+            // ^^^^^^^ for slide ^^^^^^^
+
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
             double leftFrontPower  = axial + lateral + yaw;
@@ -118,7 +136,9 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             rightBackDrive.setPower(rightBackPower);
             armDrive.setPower(armPower);
             armDrive2.setPower(otherArmPower);
-            linearSlide.setPower(linearSlideExtend);
+            grabberServo.setPosition(servoOut);
+            grabberServo.setPosition(servoBack);
+            //linearSlide.setPower(linearSlideExtend);
             //linearSlide.setPower(linearSlideBack);
 
             // Show the elapsed game time and wheel power.
