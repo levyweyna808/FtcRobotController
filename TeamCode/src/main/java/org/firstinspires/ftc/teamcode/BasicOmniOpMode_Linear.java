@@ -77,8 +77,6 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         //servo for the grabber
         grabberServo.setDirection(Servo.Direction.FORWARD);
 
-        int servoPos = 0;
-
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -90,6 +88,11 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         while (opModeIsActive()) {
             double max;
 
+            if(gamepad1.a)
+                grabberServo.setPosition(0.2);
+            else if(gamepad1.b)
+                grabberServo.setPosition(-0.09);
+
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral =  -gamepad1.left_stick_x; // should make mecanum do good( added an "-")
@@ -97,9 +100,6 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             double armPower = Range.clip(gamepad2.left_stick_y,-1.0, 1.0);
             double otherArmPower =  Range.clip(gamepad2.right_stick_y, -1.0, 1.0);
             //servo control
-            double servoBack = Range.clip(-gamepad2.right_stick_x, -1.0, 1.0);
-            double servoOut = Range.clip(gamepad2.right_stick_x, -1.0, 1.0);
-
             // \/ \/ \/ \/ \/ \/ \/ for slide \/ \/ \/ \/ \/ \/
 
             //slide in and out
@@ -136,8 +136,8 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             rightBackDrive.setPower(rightBackPower);
             armDrive.setPower(armPower);
             armDrive2.setPower(otherArmPower);
-            grabberServo.setPosition(servoOut);
-            grabberServo.setPosition(servoBack);
+            //grabberServo.setPosition(servoOut);
+            //grabberServo.setPosition(servoBack);
             //linearSlide.setPower(linearSlideExtend);
             //linearSlide.setPower(linearSlideBack);
 
