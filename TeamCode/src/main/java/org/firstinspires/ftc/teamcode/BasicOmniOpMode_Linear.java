@@ -88,17 +88,23 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         while (opModeIsActive()) {
             double max;
 
-            if(gamepad1.a)
-                grabberServo.setPosition(0.2);
-            else if(gamepad1.b)
-                grabberServo.setPosition(-0.09);
+            if(gamepad1.a){
+                grabberServo.setPosition(0.38);}
+            else if(gamepad1.b){
+                grabberServo.setPosition(-0.38);}
+            if(gamepad1.right_bumper){
+                armDrive.setPower(-1);}
+            else if(gamepad1.left_bumper){
+                armDrive.setPower(0);}
+
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral =  -gamepad1.left_stick_x; // should make mecanum do good( added an "-")
             double yaw     =  gamepad1.right_stick_x;
-            double armPower = Range.clip(gamepad2.left_stick_y,-1.0, 1.0);
-            double otherArmPower =  Range.clip(gamepad2.right_stick_y, -1.0, 1.0);
+           // double armPower = Range.clip(gamepad2.left_stick_y,-1.0, 1.0);
+            double otherArmPower = (-gamepad1.right_trigger);
+            double slideBack = (gamepad1.left_trigger);
             //servo control
             // \/ \/ \/ \/ \/ \/ \/ for slide \/ \/ \/ \/ \/ \/
 
@@ -134,8 +140,9 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             rightFrontDrive.setPower(rightFrontPower);
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
-            armDrive.setPower(armPower);
+            //armDrive.setPower(armPower);
             armDrive2.setPower(otherArmPower);
+            armDrive2.setPower(slideBack);
             //grabberServo.setPosition(servoOut);
             //grabberServo.setPosition(servoBack);
             //linearSlide.setPower(linearSlideExtend);
@@ -144,7 +151,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-            telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower, armPower);
+            //telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower, );
             telemetry.update();
         }
     }}
