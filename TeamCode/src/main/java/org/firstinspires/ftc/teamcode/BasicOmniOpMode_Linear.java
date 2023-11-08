@@ -107,7 +107,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             double slideBack = (gamepad1.left_trigger);
             //servo control
             // \/ \/ \/ \/ \/ \/ \/ for slide \/ \/ \/ \/ \/ \/
-
+            //idk just here for push
             //slide in and out
             //double linearSlideExtend = -gamepad2.right_stick_x;
             // line 93 to 95 works, however, the motor has issues with speed 
