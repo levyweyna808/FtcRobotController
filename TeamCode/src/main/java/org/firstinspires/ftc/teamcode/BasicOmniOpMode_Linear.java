@@ -28,7 +28,6 @@
  */
 
 package org.firstinspires.ftc.teamcode;
-package com.arcrobotics.ftclib.gamepad;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
