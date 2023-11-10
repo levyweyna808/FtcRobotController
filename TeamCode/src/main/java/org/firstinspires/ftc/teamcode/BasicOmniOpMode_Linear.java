@@ -28,6 +28,7 @@
  */
 
 package org.firstinspires.ftc.teamcode;
+package com.arcrobotics.ftclib.gamepad;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -108,22 +109,9 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral =  -gamepad1.left_stick_x; // should make mecanum do good( added an "-")
             double yaw     =  gamepad1.right_stick_x;
-           // double armPower = Range.clip(gamepad2.left_stick_y,-1.0, 1.0);
-            float otherArmPower = (-gamepad1.right_trigger);
+            float otherArmPower = (gamepad1.right_trigger);
             float slideBack = (gamepad1.left_trigger);
-            //servo control
-            // \/ \/ \/ \/ \/ \/ \/ for slide \/ \/ \/ \/ \/ \/
-            //idk just here for push
-            //slide in and out
-            //double linearSlideExtend = -gamepad2.right_stick_x;
-            // line 93 to 95 works, however, the motor has issues with speed 
-            //double linearSlideExtend = -gamepad2.right_trigger;
-            //double linearSlideBack = gamepad2.left_trigger;
 
-            // ^^^^^^^ for slide ^^^^^^^
-
-            // Combine the joystick requests for each axis-motion to determine each wheel's power.
-            // Set up a variable for each drive wheel to save the power level for telemetry.
             double leftFrontPower  = axial + lateral + yaw;
             double rightFrontPower = axial - lateral - yaw;
             double leftBackPower   = axial - lateral + yaw;
@@ -147,13 +135,8 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
             //armDrive.setPower(armPower);
-            armDrive2.setPower(otherArmPower);
+            armDrive2.setPower(-otherArmPower);
             armDrive2.setPower(slideBack);
-            //grabberServo.setPosition(servoOut);
-            //grabberServo.setPosition(servoBack);
-            //linearSlide.setPower(linearSlideExtend);
-            //linearSlide.setPower(linearSlideBack);
-
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
