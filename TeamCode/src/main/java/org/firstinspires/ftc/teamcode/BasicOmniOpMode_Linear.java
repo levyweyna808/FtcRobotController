@@ -51,6 +51,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
     private DcMotor armDrive2 = null;
     private DcMotor linearSlide = null;
     private  Servo grabberServo = null;
+    private Servo door_opener_servo = null;
     @Override
     public void runOpMode() {
 
@@ -64,7 +65,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         armDrive2 = hardwareMap.get(DcMotor.class,"Upper_Arm_Drive");
         linearSlide = hardwareMap.get(DcMotor.class,"linear_slide");
         grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
-        
+        door_opener_servo = hardwareMap.get(Servo.class, "door_servo");
         
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -96,15 +97,20 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
                 armDrive.setPower(-1);}
             else if(gamepad1.left_bumper){
                 armDrive.setPower(0);}
-
+            if(gamepad1.dpad_down){
+                door_opener_servo.setPosition(0.43);
+            }
+            else if (gamepad1.dpad_up){
+                door_opener_servo.setPosition(0.-43);
+            }
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral =  -gamepad1.left_stick_x; // should make mecanum do good( added an "-")
             double yaw     =  gamepad1.right_stick_x;
            // double armPower = Range.clip(gamepad2.left_stick_y,-1.0, 1.0);
-            double otherArmPower = (-gamepad1.right_trigger);
-            double slideBack = (gamepad1.left_trigger);
+            float otherArmPower = (-gamepad1.right_trigger);
+            float slideBack = (gamepad1.left_trigger);
             //servo control
             // \/ \/ \/ \/ \/ \/ \/ for slide \/ \/ \/ \/ \/ \/
             //idk just here for push
