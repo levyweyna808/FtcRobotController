@@ -37,6 +37,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+//######   E V E R Y O N E   #######
+//THE ARM CODE IS # N O T # BROKEN IN THE CODE OR THE HARDWARE!!!
+// THE PLACE ON THE EXPANSION HUB THAT THE LINEAR SLIDE MOTOR IS PLUGGED INTO IS NOT WORKING AND NEEDS TO BE ADDRESSED # A S A P #
+// If necessary, ask for a new expansion hub because that is not the only messed-up port on it.
+
 @TeleOp(name="Basic: Omni Linear OpMode", group="Linear OpMode")
 // @Disabled
 public class BasicOmniOpMode_Linear extends LinearOpMode {
