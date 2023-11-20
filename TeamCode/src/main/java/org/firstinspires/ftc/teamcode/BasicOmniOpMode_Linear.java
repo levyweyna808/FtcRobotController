@@ -37,11 +37,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-//######   E V E R Y O N E   #######
-//THE ARM CODE IS # N O T # BROKEN IN THE CODE OR THE HARDWARE!!!
-// THE PLACE ON THE EXPANSION HUB THAT THE LINEAR SLIDE MOTOR IS PLUGGED INTO IS NOT WORKING AND NEEDS TO BE ADDRESSED # A S A P #
-// If necessary, ask for a new expansion hub because that is not the only messed-up port on it.
-
 @TeleOp(name="Basic: Omni Linear OpMode", group="Linear OpMode")
 // @Disabled
 public class BasicOmniOpMode_Linear extends LinearOpMode {
@@ -68,7 +63,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         armDrive = hardwareMap.get(DcMotor.class,"Arm_drive" );
         armDrive2 = hardwareMap.get(DcMotor.class,"Upper_Arm_Drive");
         linearSlide = hardwareMap.get(DcMotor.class,"linear_slide");
-        grabberServo = hardwareMap.get(Servo.class, "grabber_servo");
+        grabberServo = hardwareMap.get(Servo.class, "box_tilt_servo");
         door_opener_servo = hardwareMap.get(Servo.class, "door_servo");
         
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -93,33 +88,32 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         while (opModeIsActive()) {
             double max;
 
-            if(gamepad1.a){
-                grabberServo.setPosition(0.38);}
-            else if(gamepad1.b){
-                grabberServo.setPosition(-0.38);}
-            if(gamepad1.right_bumper){
-                armDrive.setPower(-1);}
-            else if(gamepad1.left_bumper){
-                armDrive.setPower(0);}
-            if(gamepad1.dpad_down){
-                door_opener_servo.setPosition(0.43);
+            if (gamepad1.a) {
+                grabberServo.setPosition(0.38);
+            } else if (gamepad1.b) {
+                grabberServo.setPosition(-0.38);
             }
-            else if (gamepad1.dpad_up){
-                door_opener_servo.setPosition(0.-43);
+            if (gamepad1.right_bumper) {
+                armDrive.setPower(-1);
+            } else if (gamepad1.left_bumper) {
+                armDrive.setPower(0);
+            }
+            if (gamepad1.dpad_down) {
+                door_opener_servo.setPosition(0.43);
+            } else if (gamepad1.dpad_up) {
+                door_opener_servo.setPosition(-0.43);
             }
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  -gamepad1.left_stick_x; // should make mecanum do good( added an "-")
-            double yaw     =  gamepad1.right_stick_x;
-            float otherArmPower = (gamepad1.right_trigger);
-            float slideBack = (gamepad1.left_trigger);
-
-            double leftFrontPower  = axial + lateral + yaw;
+            double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double lateral = -gamepad1.left_stick_x; // should make mecanum do good( added an "-")
+            double yaw = gamepad1.right_stick_x;
+            double leftFrontPower = axial + lateral + yaw;
             double rightFrontPower = axial - lateral - yaw;
-            double leftBackPower   = axial - lateral + yaw;
-            double rightBackPower  = axial + lateral - yaw;
-
+            double leftBackPower = axial - lateral + yaw;
+            double rightBackPower = axial + lateral - yaw;
+            double slidePower = gamepad1.right_trigger - gamepad1.left_trigger;
+            slidePower = Range.clip(slidePower, -1.0, 1.0);
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
             max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
@@ -127,19 +121,17 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             max = Math.max(max, Math.abs(rightBackPower));
 
             if (max > 1.0) {
-                leftFrontPower  /= max;
+                leftFrontPower /= max;
                 rightFrontPower /= max;
-                leftBackPower   /= max;
-                rightBackPower  /= max;
+                leftBackPower /= max;
+                rightBackPower /= max;
             }
 
             leftFrontDrive.setPower(leftFrontPower);
             rightFrontDrive.setPower(rightFrontPower);
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
-            //armDrive.setPower(armPower);
-            armDrive2.setPower(-otherArmPower);
-            armDrive2.setPower(slideBack);
+            armDrive2.setPower(slidePower);
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
