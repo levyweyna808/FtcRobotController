@@ -140,6 +140,4 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             telemetry.update();
         }
     }}
-// thank you Graden for the set up
-// if someone else tells me to upload this thing to the cloud im losing it
 
