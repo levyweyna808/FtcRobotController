@@ -113,7 +113,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             double rightFrontPower = axial - lateral - yaw;
             double leftBackPower = axial - lateral + yaw;
             double rightBackPower = axial + lateral - yaw;
-            double slidePower = gamepad1.right_trigger - gamepad1.left_trigger;
+            double slidePower = gamepad1.left_trigger - gamepad1.right_trigger;
             slidePower = Range.clip(slidePower, -1.0, 1.0);
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
@@ -140,4 +140,3 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             telemetry.update();
         }
     }}
-
