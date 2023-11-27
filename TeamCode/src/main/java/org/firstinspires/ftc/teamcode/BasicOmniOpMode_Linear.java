@@ -52,6 +52,12 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
     private DcMotor linearSlide = null;
     private  Servo grabberServo = null;
     private Servo door_opener_servo = null;
+    static final double COUNTS_PER_MOTOR_REV = 28;
+    static final double WHEEL_DIAMETER_MM = 75;
+    static final double WHEEL_DIAMETER_INCHES = WHEEL_DIAMETER_MM * 0.0393701;
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * 1/9) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+
     @Override
     public void runOpMode() {
 
@@ -66,7 +72,6 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         linearSlide = hardwareMap.get(DcMotor.class,"linear_slide");
         grabberServo = hardwareMap.get(Servo.class, "box_tilt_servo");
         door_opener_servo = hardwareMap.get(Servo.class, "door_servo");
-        
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -136,6 +141,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
+            telemetry.addData("encoder",armDrive.getCurrentPosition());
             //telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower, );
             telemetry.update();
         }
