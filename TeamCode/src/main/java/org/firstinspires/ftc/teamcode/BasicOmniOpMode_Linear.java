@@ -72,6 +72,12 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         linearSlide = hardwareMap.get(DcMotor.class,"linear_slide");
         grabberServo = hardwareMap.get(Servo.class, "box_tilt_servo");
         door_opener_servo = hardwareMap.get(Servo.class, "door_servo");
+
+        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
