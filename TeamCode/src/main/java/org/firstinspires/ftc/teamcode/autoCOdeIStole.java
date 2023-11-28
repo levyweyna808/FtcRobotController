@@ -52,13 +52,17 @@ public class autoCOdeIStole extends LinearOpMode {
     // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-    static final double COUNTS_PER_MOTOR_REV = 28;
+    static final double COUNTS_PER_MOTOR_REV = 28; // General encoders for all rev motors
     static final double DRIVE_GEAR_REDUCTION = 12.0;
     static final double WHEEL_DIAMETER_INCHES = 3.77953;
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double DRIVE_SPEED = 3.0;
     static final double TURN_SPEED = 3.0;
-
+    //for sweeper motor
+    static final double SWEEPER_GEARING = 
+    static final double SWEEPER_DIAMETER_INCHES =
+    static final double COUNTS_PER_SWEEPER_INCH = (COUNTS_PER_MOTOR_REV * SWEEPER_GEARING) / (SWEEPER_DIAMETER_INCHES * 3.1415);
+    static final double SPEED_OF_SWEEPER = 5.0
     @Override
     public void runOpMode() {
 
