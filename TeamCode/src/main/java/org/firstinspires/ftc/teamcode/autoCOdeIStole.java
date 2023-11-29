@@ -58,25 +58,24 @@ public class autoCOdeIStole extends LinearOpMode {
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+        
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Starting at",  "%7d :%7d", leftBackDrive.getCurrentPosition(), leftFrontDrive.getCurrentPosition(),
         rightBackDrive.getCurrentPosition(), rightFrontDrive.getCurrentPosition(), armDrive.getCurrentPosition());
         telemetry.update();
 
         waitForStart();
-        encoderDrive(DRIVE_SPEED,  20,  20, 3.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        encoderDrive(TURN_SPEED,   -19.5, 19.5, 3.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+        encoderDrive(DRIVE_SPEED,  20,  20, 3.0);
+        encoderDrive(TURN_SPEED,   -19.5, 19.5, 3.0);
         //SweeperDrive(SPEED_OF_SWEEPER, 0.3, 3.0);
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        sleep(1000);  // pause to display final telemetry message.
+        sleep(1000);
     }
     public void encoderDrive(double speed, double leftInches, double rightInches, double timeoutS){
         int newLeftFrontTarget;
@@ -85,7 +84,6 @@ public class autoCOdeIStole extends LinearOpMode {
         int newRightBackTarget;
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
-
             // Determine new target position, and pass to motor controller
             newLeftFrontTarget = leftFrontDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
             newRightFrontTarget = rightFrontDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
@@ -100,7 +98,6 @@ public class autoCOdeIStole extends LinearOpMode {
             rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
             // reset the timeout time and start motion.
             runtime.reset();
             leftFrontDrive.setPower(Math.abs(speed));
@@ -110,14 +107,12 @@ public class autoCOdeIStole extends LinearOpMode {
             while (opModeIsActive() &&
                    (runtime.seconds() < timeoutS) &&
                    (leftFrontDrive.isBusy() && rightFrontDrive.isBusy() && leftBackDrive.isBusy() && rightBackDrive.isBusy())) {
-
                 // Display it for the driver.
 //                telemetry.addData("Running to",  " %7d :%7d", leftFrontDrive,  rightFrontDrive, leftBackDrive, rightBackDrive);
 //                telemetry.addData("Currently at",  " at %7d :%7d", leftFrontDrive.getCurrentPosition(), rightFrontDrive.getCurrentPosition(),
 //                        leftBackDrive.getCurrentPosition(), rightBackDrive.getCurrentPosition());
                 telemetry.update();
             }
-
             // Stop all motion;
             leftFrontDrive.setPower(0);
             leftBackDrive.setPower(0);
@@ -136,7 +131,6 @@ public class autoCOdeIStole extends LinearOpMode {
         int sweeperTarget;
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
-
             // Determine new target position, and pass to motor controller
             sweeperTarget = armDrive.getCurrentPosition() + (int)(sweeperRotationInches * COUNTS_PER_SWEEPER_INCH);
             armDrive.setTargetPosition(sweeperTarget);
@@ -146,7 +140,6 @@ public class autoCOdeIStole extends LinearOpMode {
             runtime.reset();
             armDrive.setPower(Math.abs(sweeperSpeed));
             while (opModeIsActive() && (runtime.seconds() < SweeperTmeoutS) && (armDrive.isBusy())) {
-
                 // Display it for the driver.
 //                telemetry.addData("Running to",  " %7d :%7d", leftFrontDrive,  rightFrontDrive, leftBackDrive, rightBackDrive);
 //                telemetry.addData("Currently at",  " at %7d :%7d", leftFrontDrive.getCurrentPosition(), rightFrontDrive.getCurrentPosition(),
