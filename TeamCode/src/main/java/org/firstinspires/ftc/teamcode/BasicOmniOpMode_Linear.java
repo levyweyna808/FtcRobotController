@@ -53,14 +53,12 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
     private  Servo grabberServo = null;
     private Servo door_opener_servo = null;
     static final double COUNTS_PER_MOTOR_REV = 28;
-    static final double WHEEL_DIAMETER_MM = 75;
+    static final double WHEEL_DIAMETER_MM = 96;
     static final double WHEEL_DIAMETER_INCHES = WHEEL_DIAMETER_MM * 0.0393701;
-    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * 1/9) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * 1/9) / (WHEEL_DIAMETER_INCHES * 3.1415);
 
     @Override
     public void runOpMode() {
-
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
         leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
@@ -88,14 +86,12 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         linearSlide.setDirection(DcMotor.Direction.REVERSE);
         //servo for the grabber
         grabberServo.setDirection(Servo.Direction.FORWARD);
-
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
+        
         waitForStart();
         runtime.reset();
-
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             double max;
@@ -115,7 +111,6 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             } else if (gamepad1.dpad_up) {
                 door_opener_servo.setPosition(-0.43);
             }
-
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral = -gamepad1.left_stick_x; // should make mecanum do good( added an "-")
