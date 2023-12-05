@@ -52,6 +52,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
     private DcMotor linearSlide = null;
     private  Servo grabberServo = null;
     private Servo door_opener_servo = null;
+    private DcMotor planeYeeter = null;
     static final double COUNTS_PER_MOTOR_REV = 28;
     static final double WHEEL_DIAMETER_MM = 75;
     static final double WHEEL_DIAMETER_INCHES = WHEEL_DIAMETER_MM * 0.0393701;
@@ -68,10 +69,11 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         armDrive = hardwareMap.get(DcMotor.class,"Arm_drive" );
-        armDrive2 = hardwareMap.get(DcMotor.class,"Upper_Arm_Drive");
-        linearSlide = hardwareMap.get(DcMotor.class,"linear_slide");
+        armDrive2 = hardwareMap.get(DcMotor.class,"linear_slide");
+        //linearSlide = hardwareMap.get(DcMotor.class,"insertnamehere");
         grabberServo = hardwareMap.get(Servo.class, "box_tilt_servo");
         door_opener_servo = hardwareMap.get(Servo.class, "door_servo");
+        planeYeeter = hardwareMap.get(DcMotor.class, "PlaneYeeter");
 
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -83,10 +85,12 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        planeYeeter.setDirection(DcMotor.Direction.REVERSE);
+
         //arm drives:
         armDrive.setDirection(DcMotor.Direction.FORWARD);
         armDrive2.setDirection(DcMotor.Direction.REVERSE);
-        linearSlide.setDirection(DcMotor.Direction.REVERSE);
+        //linearSlide.setDirection(DcMotor.Direction.REVERSE);
         //servo for the grabber
         grabberServo.setDirection(Servo.Direction.FORWARD);
 
@@ -111,12 +115,10 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             } else if (gamepad1.left_bumper) {
                 armDrive.setPower(0);
             }
-            if (gamepad1.dpad_down) {
-                door_opener_servo.setPosition(0.43);
-            } else if (gamepad1.dpad_up) {
-                door_opener_servo.setPosition(-0.43);
-            }
-
+            if (gamepad1.dpad_up) {
+                planeYeeter.setPower(1);}
+            else if (gamepad1.dpad_down) {
+                planeYeeter.setPower(0);}
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral = -gamepad1.left_stick_x; // should make mecanum do good( added an "-")

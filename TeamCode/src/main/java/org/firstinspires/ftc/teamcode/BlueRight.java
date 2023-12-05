@@ -7,12 +7,12 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 //commit stuff
-@Autonomous(name="BlueLeft", group="Robot")
-public class autoCOdeIStole extends LinearOpMode {
+@Autonomous(name="BlueRight", group="Robot")
+public class BlueRight extends LinearOpMode {
 
     /* Declare OpMode members. */
     private DcMotor leftFrontDrive = null;
@@ -28,8 +28,8 @@ public class autoCOdeIStole extends LinearOpMode {
     static final double DRIVE_GEAR_REDUCTION = 12.0;
     static final double WHEEL_DIAMETER_INCHES = 3.77953;
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double DRIVE_SPEED = 3.0;
-    static final double TURN_SPEED = 3.0;
+    static final double DRIVE_SPEED = 0.3;
+    static final double TURN_SPEED = 0.7;
     //for sweeper motor
     static final double SWEEPER_GEARING = 9.0;
     static final double SWEEPER_DIAMETER_INCHES = 3;
@@ -89,8 +89,9 @@ public class autoCOdeIStole extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        encoderDrive(DRIVE_SPEED,  20,  20, 3.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        encoderDrive(TURN_SPEED,   -19.5, 19.5, 3.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+        encoderDrive(DRIVE_SPEED,  42,  40, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+        encoderDrive(TURN_SPEED,   -60, 60, 5.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+        encoderDrive(DRIVE_SPEED, -60, -60, 5.0);
         //SweeperDrive(SPEED_OF_SWEEPER, 0.3, 3.0);
         //LinearSlideDrive(LINEAR_SLIDE_SPEED, 0.4, 3.0);
         telemetry.addData("Path", "Complete");
