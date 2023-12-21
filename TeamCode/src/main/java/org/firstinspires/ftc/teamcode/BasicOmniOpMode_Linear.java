@@ -50,9 +50,12 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
     private DcMotor armDrive = null;
     private DcMotor armDrive2 = null;
     private DcMotor linearSlide = null;
+    private DcMotor otherSlide = null;
     private  Servo grabberServo = null;
     private Servo door_opener_servo = null;
     private DcMotor planeYeeter = null;
+    //private Servo rightClaw = null;
+    //private Servo leftClaw = null;
     static final double COUNTS_PER_MOTOR_REV = 28;
     static final double WHEEL_DIAMETER_MM = 75;
     static final double WHEEL_DIAMETER_INCHES = WHEEL_DIAMETER_MM * 0.0393701;
@@ -74,6 +77,9 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         grabberServo = hardwareMap.get(Servo.class, "box_tilt_servo");
         door_opener_servo = hardwareMap.get(Servo.class, "door_servo");
         planeYeeter = hardwareMap.get(DcMotor.class, "PlaneYeeter");
+        otherSlide = hardwareMap.get(DcMotor.class,"Slide2");
+        //rightClaw = hardwareMap.get(Servo.class, "rightClaw");
+        //leftClaw = hardwareMap.get(Servo.class, "leftClaw");
 
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -83,17 +89,20 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
         planeYeeter.setDirection(DcMotor.Direction.REVERSE);
 
         //arm drives:
         armDrive.setDirection(DcMotor.Direction.FORWARD);
-        armDrive2.setDirection(DcMotor.Direction.REVERSE);
+        armDrive2.setDirection(DcMotor.Direction.FORWARD);
+        otherSlide.setDirection(DcMotor.Direction.REVERSE);
         //linearSlide.setDirection(DcMotor.Direction.REVERSE);
         //servo for the grabber
         grabberServo.setDirection(Servo.Direction.FORWARD);
-
+        //For the the claw thingy ma bober
+        //rightClaw.setDirection(Servo.Direction.FORWARD);
+        //leftClaw.setDirection(Servo.Direction.FORWARD);
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -107,7 +116,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
 
             if (gamepad1.a) {
                 grabberServo.setPosition(0.38);
-            } else if (gamepad1.b) {
+            } else if (gamepad1.y) {
                 grabberServo.setPosition(-0.38);
             }
             if (gamepad1.right_bumper) {
@@ -115,13 +124,28 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             } else if (gamepad1.left_bumper) {
                 armDrive.setPower(0);
             }
+            //if (gamepad1.dpad_up) {
+                //planeYeeter.setPower(1);}
+            //else if (gamepad1.dpad_down) {
+                //planeYeeter.setPower(0);}
+            //idk if that even works lol
             if (gamepad1.dpad_up) {
-                planeYeeter.setPower(1);}
-            else if (gamepad1.dpad_down) {
-                planeYeeter.setPower(0);}
+                door_opener_servo.setPosition(0.286);
+            }
+            else if (gamepad1.dpad_down){
+                door_opener_servo.setPosition(-0.286);
+            }
+            if (gamepad1.dpad_left && gamepad1.b){
+                door_opener_servo.setPosition(0.286);
+                sleep(1000);
+                grabberServo.setPosition(-0.38);
+                sleep(1300);
+                grabberServo.setPosition(-0.38);
+                door_opener_servo.setPosition(0.286);
+            }
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral = -gamepad1.left_stick_x; // should make mecanum do good( added an "-")
+            double lateral = gamepad1.left_stick_x; // should make mecanum do good( added an "-")
             double yaw = gamepad1.right_stick_x;
             double leftFrontPower = axial + lateral + yaw;
             double rightFrontPower = axial - lateral - yaw;
@@ -129,6 +153,8 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             double rightBackPower = axial + lateral - yaw;
             double slidePower = gamepad1.left_trigger - gamepad1.right_trigger;
             slidePower = Range.clip(slidePower, -1.0, 1.0);
+            double slidePower2 = gamepad1.left_trigger - gamepad1.right_trigger;
+            slidePower2 = Range.clip(slidePower2, -1.0, 1.0);
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
             max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
@@ -147,6 +173,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
             armDrive2.setPower(slidePower);
+            otherSlide.setPower(slidePower2);
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
