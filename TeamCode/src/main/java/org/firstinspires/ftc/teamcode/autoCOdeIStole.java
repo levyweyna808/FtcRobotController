@@ -22,14 +22,17 @@ public class autoCOdeIStole extends LinearOpMode {
     private DcMotor linearSlide = null;
     private Servo grabberServo = null;
     private DcMotor armDrive =null;
+    private DcMotor otherSlide = null;
+    private DcMotor armDrive2 = null;
+
     private ElapsedTime runtime = new ElapsedTime();
     //for the drive train
     static final double COUNTS_PER_MOTOR_REV = 28; // General encoders for all rev motors
     static final double DRIVE_GEAR_REDUCTION = 12.0;
     static final double WHEEL_DIAMETER_INCHES = 3.77953;
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double DRIVE_SPEED = 3.0;
-    static final double TURN_SPEED = 3.0;
+    static final double DRIVE_SPEED = 1.0;
+    static final double TURN_SPEED = 1.0;
     //for sweeper motor
     static final double SWEEPER_GEARING = 9.0;
     static final double SWEEPER_DIAMETER_INCHES = 3;
@@ -52,7 +55,8 @@ public class autoCOdeIStole extends LinearOpMode {
         armDrive = hardwareMap.get(DcMotor.class,"Arm_drive" );
         linearSlide = hardwareMap.get(DcMotor.class,"linear_slide");
         grabberServo = hardwareMap.get(Servo.class, "box_tilt_servo");
-
+        otherSlide = hardwareMap.get(DcMotor.class,"Slide2");
+        armDrive2 = hardwareMap.get(DcMotor.class,"linear_slide");
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -61,6 +65,9 @@ public class autoCOdeIStole extends LinearOpMode {
         linearSlide.setDirection(DcMotor.Direction.REVERSE);
         //servo
         grabberServo.setDirection(Servo.Direction.FORWARD);
+        // SLIDES
+        armDrive2.setDirection(DcMotor.Direction.FORWARD);
+        otherSlide.setDirection(DcMotor.Direction.REVERSE);
 
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -68,6 +75,9 @@ public class autoCOdeIStole extends LinearOpMode {
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         linearSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        otherSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armDrive2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -75,6 +85,8 @@ public class autoCOdeIStole extends LinearOpMode {
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         linearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        otherSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armDrive2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -82,6 +94,8 @@ public class autoCOdeIStole extends LinearOpMode {
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         linearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        otherSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Starting at",  "%7d :%7d", leftBackDrive.getCurrentPosition(), leftFrontDrive.getCurrentPosition(),
@@ -89,10 +103,10 @@ public class autoCOdeIStole extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        encoderDrive(DRIVE_SPEED,  20,  20, 3.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        encoderDrive(TURN_SPEED,   -19.5, 19.5, 3.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+        encoderDrive(DRIVE_SPEED,  10,  20, 3.0);  // S1: Forward 47 Inches with 5 Sec timeout
+        //encoderDrive(TURN_SPEED,   -19.5, 19.5, 3.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         //SweeperDrive(SPEED_OF_SWEEPER, 0.3, 3.0);
-        //LinearSlideDrive(LINEAR_SLIDE_SPEED, 0.4, 3.0);
+        LinearSlideDrive(LINEAR_SLIDE_SPEED, 0, 3.0);
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);  // pause to display final telemetry message.
@@ -182,18 +196,26 @@ public class autoCOdeIStole extends LinearOpMode {
 
     public void LinearSlideDrive(double slideSpeed, double slideRotationInches, double slideTmeoutS){
         int slideTarget;
+        int slideTarget2;
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            slideTarget = linearSlide.getCurrentPosition() + (int)(slideRotationInches * COUNTS_PER_LS_INCH);
-            linearSlide.setTargetPosition(slideTarget);
+            slideTarget = otherSlide.getCurrentPosition() + (int)(slideRotationInches * COUNTS_PER_LS_INCH);
+            slideTarget2 = armDrive2.getCurrentPosition() + (int)(slideRotationInches * COUNTS_PER_LS_INCH);
+
+            otherSlide.setTargetPosition(slideTarget);
+            armDrive2.setTargetPosition(slideTarget);
             // Turn On RUN_TO_POSITION
-            linearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            otherSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armDrive2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             // reset the timeout time and start motion.
             runtime.reset();
-            linearSlide.setPower(Math.abs(slideSpeed));
-            while (opModeIsActive() && (runtime.seconds() < slideTmeoutS) && (linearSlide.isBusy())) {
+            armDrive2.setPower(Math.abs(slideSpeed));
+            otherSlide.setPower(Math.abs(slideSpeed));
+
+            while (opModeIsActive() && (runtime.seconds() < slideTmeoutS) && (armDrive2.isBusy() && (otherSlide.isBusy()))) {
 
                 // Display it for the driver.
 //                telemetry.addData("Running to",  " %7d :%7d", leftFrontDrive,  rightFrontDrive, leftBackDrive, rightBackDrive);
@@ -202,9 +224,13 @@ public class autoCOdeIStole extends LinearOpMode {
                 telemetry.update();
             }
             // Stop all motion;
-            linearSlide.setPower(0);
+            otherSlide.setPower(0);
+            armDrive2.setPower(0);
+
             // Turn off RUN_TO_POSITION
-            linearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            otherSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            armDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
             sleep(250);   // optional pause after each move.
         }
     }

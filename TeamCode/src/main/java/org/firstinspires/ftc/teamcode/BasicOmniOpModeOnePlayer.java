@@ -32,14 +32,13 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="2 player drive mode", group="Linear OpMode")
+@TeleOp(name="1 player drive mode", group="Linear OpMode")
 // @Disabled
-public class BasicOmniOpMode_Linear extends LinearOpMode {
+public class BasicOmniOpModeOnePlayer extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -95,8 +94,6 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armDrive2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        otherSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -126,35 +123,26 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             double max;
-            if (gamepad2.right_bumper) {
-                armDrive.setPower(-0.85);
-            } else if (gamepad2.left_bumper) {
+            if (gamepad1.right_bumper) {
+                armDrive.setPower(-0.75);
+            } else if (gamepad1.left_bumper) {
                 armDrive.setPower(0);
             }
-            if (gamepad2.dpad_down) {
+            //if (gamepad1.dpad_up) {
+            //planeYeeter.setPower(1);}
+            //else if (gamepad1.dpad_down) {
+            //planeYeeter.setPower(0);}
+            //idk if that even works lol
+            if (gamepad1.dpad_down) {
                 door_opener_servo.setPosition(-0.648);
-            } else if (gamepad2.dpad_up) {
+            } else if (gamepad1.dpad_up) {
                 door_opener_servo.setPosition(0.648);
             }
-            if (gamepad2.b) {
-                rightServo.setPosition(0.47); leftServo.setPosition(0.47);//flat. lower number= more back tilt
+            if (gamepad1.a) {
+                rightServo.setPosition(0.455); leftServo.setPosition(0.455);
             }
-            else if (gamepad2.y) {//tilt
-                rightServo.setPosition(0.12);
-                leftServo.setPosition(0.12);
-            }
-            else if (gamepad2.a) {
-                rightServo.setPosition(0.44);
-                leftServo.setPosition(0.44);
-            }
-            else if (gamepad2.x) {//right most button
-                rightServo.setPosition(0.12);
-                leftServo.setPosition(0.12);
-                sleep(1000);
-                door_opener_servo.setPosition(0.648);
-                sleep(1000);
-                rightServo.setPosition(0.47);
-                leftServo.setPosition(0.47);
+            else if (gamepad1.y) {
+                rightServo.setPosition(0.15);leftServo.setPosition(0.15);
             }
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
@@ -164,9 +152,9 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             double rightFrontPower = axial - lateral - yaw;
             double leftBackPower = axial - lateral + yaw;
             double rightBackPower = axial + lateral - yaw;
-            double slidePower = gamepad2.left_trigger - gamepad2.right_trigger;
+            double slidePower = gamepad1.left_trigger - gamepad1.right_trigger;
             slidePower = Range.clip(slidePower, -1.0, 1.0);
-            double slidePower2 = gamepad2.left_trigger - gamepad2.right_trigger;
+            double slidePower2 = gamepad1.left_trigger - gamepad1.right_trigger;
             slidePower2 = Range.clip(slidePower2, -1.0, 1.0);
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
