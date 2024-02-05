@@ -150,9 +150,9 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             else if (gamepad2.x) {//right most button
                 rightServo.setPosition(0.12);
                 leftServo.setPosition(0.12);
-                sleep(1000);
+                sleep(500);
                 door_opener_servo.setPosition(0.648);
-                sleep(1000);
+                sleep(500);
                 rightServo.setPosition(0.47);
                 leftServo.setPosition(0.47);
             }

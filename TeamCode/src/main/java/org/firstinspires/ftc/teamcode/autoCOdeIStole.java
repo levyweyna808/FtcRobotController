@@ -28,10 +28,10 @@ public class autoCOdeIStole extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     //for the drive train
     static final double COUNTS_PER_MOTOR_REV = 28; // General encoders for all rev motors
-    static final double DRIVE_GEAR_REDUCTION = 12.0;
+    static final double DRIVE_GEAR_REDUCTION = 15.0;
     static final double WHEEL_DIAMETER_INCHES = 3.77953;
-    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double DRIVE_SPEED = 1.0;
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV / DRIVE_GEAR_REDUCTION) * (WHEEL_DIAMETER_INCHES * 3.1415 * 2);
+    static final double DRIVE_SPEED = 0.4;
     static final double TURN_SPEED = 1.0;
     //for sweeper motor
     static final double SWEEPER_GEARING = 9.0;
@@ -59,7 +59,7 @@ public class autoCOdeIStole extends LinearOpMode {
         armDrive2 = hardwareMap.get(DcMotor.class,"linear_slide");
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
         armDrive.setDirection(DcMotor.Direction.REVERSE);
         linearSlide.setDirection(DcMotor.Direction.REVERSE);
@@ -103,10 +103,10 @@ public class autoCOdeIStole extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        encoderDrive(DRIVE_SPEED,  10,  20, 3.0);  // S1: Forward 47 Inches with 5 Sec timeout
+        encoderDrive(DRIVE_SPEED,  10,  10, 3.0);  // S1: Forward 47 Inches with 5 Sec timeout
         //encoderDrive(TURN_SPEED,   -19.5, 19.5, 3.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         //SweeperDrive(SPEED_OF_SWEEPER, 0.3, 3.0);
-        LinearSlideDrive(LINEAR_SLIDE_SPEED, 0, 3.0);
+        //LinearSlideDrive(LINEAR_SLIDE_SPEED, 0, 3.0);
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);  // pause to display final telemetry message.
