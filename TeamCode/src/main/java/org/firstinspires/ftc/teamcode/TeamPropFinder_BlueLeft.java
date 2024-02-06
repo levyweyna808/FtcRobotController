@@ -7,12 +7,13 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+
 //commit stuff
 @Autonomous(name="BlueLeft", group="Robot")
-public class autoCOdeIStole extends LinearOpMode {
+public class TeamPropFinder_BlueLeft extends LinearOpMode {
 
     /* Declare OpMode members. */
     private DcMotor leftFrontDrive = null;
@@ -76,7 +77,11 @@ public class autoCOdeIStole extends LinearOpMode {
         // SLIDES
         armDrive2.setDirection(DcMotor.Direction.FORWARD);
         otherSlide.setDirection(DcMotor.Direction.REVERSE);
-
+        //Button on a stick set up
+        DigitalChannel digitalTouch;
+        digitalTouch = hardwareMap.get(DigitalChannel.class, "sensor_digital");
+        digitalTouch.setMode(DigitalChannel.Mode.INPUT);
+        //Motor aids
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -85,7 +90,6 @@ public class autoCOdeIStole extends LinearOpMode {
         linearSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         otherSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armDrive2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
 
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -113,9 +117,18 @@ public class autoCOdeIStole extends LinearOpMode {
         waitForStart();
         rightServo.setPosition(0.44);
         leftServo.setPosition(0.44);
-        encoderDrive(DRIVE_SPEED,  -30,  -30, 3.0);
-        Strafe(DRIVE_SPEED,  20,  20, 3.0);
-        encoderDrive(DRIVE_SPEED,  -3,  -3, 3.0);
+        Strafe(DRIVE_SPEED,  30,  30, 3.0);
+        if (digitalTouch.getState() == true) {
+            telemetry.addData("Digital Touch", "Is Not Pressed");
+        } else {
+            telemetry.addData("Digital Touch", "Is Pressed");
+            //Add code for dropping the pixel
+            leftFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            rightBackDrive.setPower(0);
+        }
+        encoderDrive(DRIVE_SPEED,  -10,  10, 3.0);
         //encoderDrive(TURN_SPEED,   -19.5, 19.5, 3.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         //SweeperDrive(SPEED_OF_SWEEPER, 0.3, 3.0);
         LinearSlideDrive(LINEAR_SLIDE_SPEED, -1.5, 3.0);
