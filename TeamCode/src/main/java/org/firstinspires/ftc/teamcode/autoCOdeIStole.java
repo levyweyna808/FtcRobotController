@@ -21,6 +21,9 @@ public class autoCOdeIStole extends LinearOpMode {
     private DcMotor rightBackDrive = null;
     private DcMotor linearSlide = null;
     private Servo grabberServo = null;
+    private Servo door_opener_servo = null;
+    private Servo rightServo = null;
+    private Servo leftServo = null;
     private DcMotor armDrive =null;
     private DcMotor otherSlide = null;
     private DcMotor armDrive2 = null;
@@ -42,7 +45,7 @@ public class autoCOdeIStole extends LinearOpMode {
     static final double COUNTS_PER_MOTOR_BILDA = 28;
     static final double LINEAR_SLIDE_GEARING = 	19.20;
     static final double PULLEY_WHEEL_DIAMETER_INCHES = 1.45;
-    static final double COUNTS_PER_LS_INCH = (COUNTS_PER_MOTOR_BILDA * LINEAR_SLIDE_GEARING) / (PULLEY_WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double COUNTS_PER_LS_INCH = (COUNTS_PER_MOTOR_BILDA / LINEAR_SLIDE_GEARING) * (PULLEY_WHEEL_DIAMETER_INCHES * 3.1415 * 2);
     static final double LINEAR_SLIDE_SPEED = 1.0;
     @Override
     public void runOpMode() {
@@ -57,6 +60,9 @@ public class autoCOdeIStole extends LinearOpMode {
         grabberServo = hardwareMap.get(Servo.class, "box_tilt_servo");
         otherSlide = hardwareMap.get(DcMotor.class,"Slide2");
         armDrive2 = hardwareMap.get(DcMotor.class,"linear_slide");
+        door_opener_servo = hardwareMap.get(Servo.class, "door_servo");
+        rightServo = hardwareMap.get(Servo.class,"rightServo");
+        leftServo = hardwareMap.get(Servo.class,"leftServo");
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -65,6 +71,8 @@ public class autoCOdeIStole extends LinearOpMode {
         linearSlide.setDirection(DcMotor.Direction.REVERSE);
         //servo
         grabberServo.setDirection(Servo.Direction.FORWARD);
+        rightServo.setDirection(Servo.Direction.FORWARD);
+        leftServo.setDirection(Servo.Direction.REVERSE);
         // SLIDES
         armDrive2.setDirection(DcMotor.Direction.FORWARD);
         otherSlide.setDirection(DcMotor.Direction.REVERSE);
@@ -103,10 +111,21 @@ public class autoCOdeIStole extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        encoderDrive(DRIVE_SPEED,  10,  10, 3.0);  // S1: Forward 47 Inches with 5 Sec timeout
+        rightServo.setPosition(0.44);
+        leftServo.setPosition(0.44);
+        encoderDrive(DRIVE_SPEED,  -30,  -30, 3.0);
+        Strafe(DRIVE_SPEED,  20,  20, 3.0);
+        encoderDrive(DRIVE_SPEED,  -3,  -3, 3.0);
         //encoderDrive(TURN_SPEED,   -19.5, 19.5, 3.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         //SweeperDrive(SPEED_OF_SWEEPER, 0.3, 3.0);
-        //LinearSlideDrive(LINEAR_SLIDE_SPEED, 0, 3.0);
+        LinearSlideDrive(LINEAR_SLIDE_SPEED, -1.5, 3.0);
+        rightServo.setPosition(0.12);
+        leftServo.setPosition(0.12);
+        sleep(1000);
+        door_opener_servo.setPosition(0.648);
+        sleep(1000);
+        rightServo.setPosition(0.47);
+        leftServo.setPosition(0.47);
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);  // pause to display final telemetry message.
@@ -161,6 +180,71 @@ public class autoCOdeIStole extends LinearOpMode {
             rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            sleep(250);   // optional pause after each move.
+        }
+    }
+    public void Strafe(double speed, double leftInches, double rightInches, double timeoutS){
+        int newLeftFrontTarget;
+        int newRightFrontTarget;
+        int newLeftBackTarget;
+        int newRightBackTarget;
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+            leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+            rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+            rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+
+            // Determine new target position, and pass to motor controller
+            newLeftFrontTarget = leftFrontDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRightFrontTarget = rightFrontDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newLeftBackTarget = leftBackDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRightBackTarget = rightBackDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            leftFrontDrive.setTargetPosition(newLeftFrontTarget);
+            rightFrontDrive.setTargetPosition(newRightFrontTarget);
+            leftBackDrive.setTargetPosition(newLeftBackTarget);
+            rightBackDrive.setTargetPosition(newRightBackTarget);
+            // Turn On RUN_TO_POSITION
+            leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            leftFrontDrive.setPower(Math.abs(speed));
+            rightFrontDrive.setPower(Math.abs(speed));
+            leftBackDrive.setPower(Math.abs(speed));
+            rightBackDrive.setPower(Math.abs(speed));
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (leftFrontDrive.isBusy() && rightFrontDrive.isBusy() && leftBackDrive.isBusy() && rightBackDrive.isBusy())) {
+
+                // Display it for the driver.
+//                telemetry.addData("Running to",  " %7d :%7d", leftFrontDrive,  rightFrontDrive, leftBackDrive, rightBackDrive);
+//                telemetry.addData("Currently at",  " at %7d :%7d", leftFrontDrive.getCurrentPosition(), rightFrontDrive.getCurrentPosition(),
+//                        leftBackDrive.getCurrentPosition(), rightBackDrive.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            leftFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            rightBackDrive.setPower(0);
+
+            leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+            leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+            rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+            rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+
+            // Turn off RUN_TO_POSITION
+            rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
             sleep(250);   // optional pause after each move.
         }
     }
