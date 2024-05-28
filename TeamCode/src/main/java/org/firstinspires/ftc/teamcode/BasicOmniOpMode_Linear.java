@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -66,9 +67,8 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
     static final double WHEEL_DIAMETER_MM = 75;
     //mucho grande
     static final double WHEEL_DIAMETER_INCHES = WHEEL_DIAMETER_MM * 0.0393701;
-    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * 1/9) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
-
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * 1/9) / (WHEEL_DIAMETER_INCHES * 3.1415);
+    private DigitalChannel digitalTouch=null;
     @Override
     public void runOpMode() {
 

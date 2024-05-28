@@ -11,8 +11,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorTouch;
+
 //commit stuff
-@Autonomous(name="BlueLeft", group="Robot")
+@Autonomous(name="BlueLeftButtonTest", group="Robot")
 public class TeamPropFinder_BlueLeft extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -25,6 +27,7 @@ public class TeamPropFinder_BlueLeft extends LinearOpMode {
     private Servo door_opener_servo = null;
     private Servo rightServo = null;
     private Servo leftServo = null;
+    private DigitalChannel digitalTouch=null;
     private DcMotor armDrive =null;
     private DcMotor otherSlide = null;
     private DcMotor armDrive2 = null;
@@ -78,7 +81,6 @@ public class TeamPropFinder_BlueLeft extends LinearOpMode {
         armDrive2.setDirection(DcMotor.Direction.FORWARD);
         otherSlide.setDirection(DcMotor.Direction.REVERSE);
         //Button on a stick set up
-        DigitalChannel digitalTouch;
         digitalTouch = hardwareMap.get(DigitalChannel.class, "sensor_digital");
         digitalTouch.setMode(DigitalChannel.Mode.INPUT);
         //Motor aids
@@ -118,17 +120,23 @@ public class TeamPropFinder_BlueLeft extends LinearOpMode {
         rightServo.setPosition(0.44);
         leftServo.setPosition(0.44);
         Strafe(DRIVE_SPEED,  30,  30, 3.0);
-        if (digitalTouch.getState() == true) {
-            telemetry.addData("Digital Touch", "Is Not Pressed");
-        } else {
-            telemetry.addData("Digital Touch", "Is Pressed");
-            //Add code for dropping the pixel
+        while (digitalTouch.getState() == false){
+            leftFrontDrive.setPower(Math.abs(-1));
+            rightFrontDrive.setPower(Math.abs(1));
+            leftBackDrive.setPower(Math.abs(-1));
+            rightBackDrive.setPower(Math.abs(1));
+            if (digitalTouch.getState() == true){
             leftFrontDrive.setPower(0);
             leftBackDrive.setPower(0);
             rightFrontDrive.setPower(0);
             rightBackDrive.setPower(0);
+            break;
+            }
         }
-        encoderDrive(DRIVE_SPEED,  -10,  10, 3.0);
+        leftFrontDrive.setPower(0);
+        leftBackDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+        rightBackDrive.setPower(0);
         //encoderDrive(TURN_SPEED,   -19.5, 19.5, 3.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         //SweeperDrive(SPEED_OF_SWEEPER, 0.3, 3.0);
         LinearSlideDrive(LINEAR_SLIDE_SPEED, -1.5, 3.0);

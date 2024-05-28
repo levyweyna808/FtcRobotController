@@ -118,7 +118,7 @@ public class BlueLeft extends LinearOpMode {
         encoderDrive(DRIVE_SPEED,  -3,  -3, 3.0);
         //encoderDrive(TURN_SPEED,   -19.5, 19.5, 3.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         //SweeperDrive(SPEED_OF_SWEEPER, 0.3, 3.0);
-        LinearSlideDrive(LINEAR_SLIDE_SPEED, -1.5, 3.0);
+        LinearSlideDrive(LINEAR_SLIDE_SPEED, -0.8, 3.0);
         rightServo.setPosition(0.12);
         leftServo.setPosition(0.12);
         sleep(1000);
@@ -126,6 +126,10 @@ public class BlueLeft extends LinearOpMode {
         sleep(1000);
         rightServo.setPosition(0.47);
         leftServo.setPosition(0.47);
+        sleep(1000);
+        encoderDrive(DRIVE_SPEED,  2,  2, 3.0);
+        Strafe(DRIVE_SPEED,  -15,  -15, 3.0);
+        encoderDrive(DRIVE_SPEED,  -7,  -7, 3.0);
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);  // pause to display final telemetry message.

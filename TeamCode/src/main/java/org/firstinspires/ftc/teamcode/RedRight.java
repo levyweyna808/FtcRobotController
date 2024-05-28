@@ -7,6 +7,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -118,7 +119,7 @@ public class RedRight extends LinearOpMode {
         encoderDrive(DRIVE_SPEED,  -3,  -3, 3.0);
         //encoderDrive(TURN_SPEED,   -19.5, 19.5, 3.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         //SweeperDrive(SPEED_OF_SWEEPER, 0.3, 3.0);
-        LinearSlideDrive(LINEAR_SLIDE_SPEED, -1.5, 3.0);
+        LinearSlideDrive(LINEAR_SLIDE_SPEED, -0.8, 3.0);
         rightServo.setPosition(0.12);
         leftServo.setPosition(0.12);
         sleep(1000);
@@ -126,6 +127,10 @@ public class RedRight extends LinearOpMode {
         sleep(1000);
         rightServo.setPosition(0.47);
         leftServo.setPosition(0.47);
+        sleep(1000);
+        encoderDrive(DRIVE_SPEED,  2,  2, 3.0);
+        Strafe(DRIVE_SPEED,  15,  15, 3.0);
+        encoderDrive(DRIVE_SPEED,  -7,  -7, 3.0);
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);  // pause to display final telemetry message.
@@ -191,10 +196,10 @@ public class RedRight extends LinearOpMode {
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
-            leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-            leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-            rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-            rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+            leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+            leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
+            rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+            rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
             // Determine new target position, and pass to motor controller
             newLeftFrontTarget = leftFrontDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
